@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+def grpcVersion = '1.63.0'
+def protobufVersion = '3.25.3'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.grpc:grpc-netty-shaded:$grpcVersion"
+    implementation "io.grpc:grpc-protobuf:$grpcVersion"
+    implementation "io.grpc:grpc-stub:$grpcVersion"
+
+    // Optional: for reflection-based service discovery
+    implementation "io.grpc:grpc-services:$grpcVersion"
+
+    // Protobuf compiler
+    implementation "com.google.protobuf:protobuf-java:$protobufVersion"
+    implementation "com.google.protobuf:protobuf-kotlin:$protobufVersion"
+
+    // Annotation processor for gRPC
+    compileOnly "org.apache.tomcat:annotations-api:6.0.53"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$protobufVersion"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                grpc {}
+            }
+        }
+    }
+}
+
+sourceSets{
+    main{
+        proto{
+            srcDir("../proto")
+        }
+    }
+}
