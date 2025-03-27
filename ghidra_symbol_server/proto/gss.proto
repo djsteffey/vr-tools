@@ -5,6 +5,11 @@ package ghidrasymbolserver;
 service GhidraSymbolServer{
     rpc GetSymbolAtAddress(UnsignedLong) returns (String);
     rpc GetAddressOfSymbol(String) returns (UnsignedLong);
+    rpc GetAllSymbols(EmptyRequest) returns (AllSymbolsResponse);
+}
+
+message EmptyRequest{
+
 }
 
 message UnsignedLong{
@@ -13,4 +18,13 @@ message UnsignedLong{
 
 message String{
     string value = 1;
+}
+
+message Symbol{
+    string name = 1;
+    uint64 address = 2;
+}
+
+message AllSymbolsResponse{
+    repeated Symbol symbols = 1;
 }

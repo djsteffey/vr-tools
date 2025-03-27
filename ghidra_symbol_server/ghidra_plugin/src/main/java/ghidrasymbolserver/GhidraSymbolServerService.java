@@ -87,4 +87,32 @@ public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymb
                 )
         );
     }
+
+    @Override
+    public void getAllSymbols(Gss.EmptyRequest request, StreamObserver<Gss.AllSymbolsResponse> responseObserver) {
+        this.m_logger.addMessage("received request for all symbols");
+
+        // start the response
+        Gss.AllSymbolsResponse.Builder builder = Gss.AllSymbolsResponse.newBuilder();
+
+        // ask ghidra
+        int count = 0;
+        for (Symbol symbol : this.m_program.getSymbolTable().getAllSymbols(false)){
+            count += 1;
+            String name = symbol.getName();
+            long address = symbol.getAddress().getOffset() - this.m_program.getImageBase().getOffset();
+            builder.addSymbols(
+                    Gss.Symbol.newBuilder().setName(name).setAddress(address).build()
+            );
+        }
+
+        // send it
+        responseObserver.onNext(builder.build());
+
+        // done
+        responseObserver.onCompleted();
+
+        // log
+        this.m_logger.addMessage("all symbols sent (" + count + ")");
+    }
 }
