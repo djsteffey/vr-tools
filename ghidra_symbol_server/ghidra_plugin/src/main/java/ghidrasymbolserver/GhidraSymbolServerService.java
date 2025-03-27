@@ -4,6 +4,8 @@ import ghidra.app.services.ConsoleService;
 import ghidra.program.model.address.Address;
 import ghidra.program.model.address.AddressFactory;
 import ghidra.program.model.address.AddressSpace;
+import ghidra.program.model.listing.Function;
+import ghidra.program.model.listing.FunctionIterator;
 import ghidra.program.model.listing.Program;
 import ghidra.program.model.symbol.Symbol;
 import io.grpc.stub.StreamObserver;
@@ -88,6 +90,7 @@ public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymb
         );
     }
 
+    /*
     @Override
     public void getAllSymbols(Gss.EmptyRequest request, StreamObserver<Gss.AllSymbolsResponse> responseObserver) {
         this.m_logger.addMessage("received request for all symbols");
@@ -101,6 +104,41 @@ public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymb
             count += 1;
             String name = symbol.getName();
             long address = symbol.getAddress().getOffset() - this.m_program.getImageBase().getOffset();
+            builder.addSymbols(
+                    Gss.Symbol.newBuilder().setName(name).setAddress(address).build()
+            );
+        }
+
+        // send it
+        responseObserver.onNext(builder.build());
+
+        // done
+        responseObserver.onCompleted();
+
+        // log
+        this.m_logger.addMessage("all symbols sent (" + count + ")");
+    }*/
+
+    @Override
+    public void getAllSymbols(Gss.EmptyRequest request, StreamObserver<Gss.AllSymbolsResponse> responseObserver) {
+        this.m_logger.addMessage("received request for all symbols");
+
+        // start the response
+        Gss.AllSymbolsResponse.Builder builder = Gss.AllSymbolsResponse.newBuilder();
+
+        // ask ghidra
+        int count = 0;
+        // Get the listing from the current program
+        FunctionIterator functionIterator = this.m_program.getFunctionManager().getFunctionsNoStubs(true);
+
+        // Loop through all functions
+        while (functionIterator.hasNext()) {
+            count += 1;
+
+            Function function = functionIterator.next();
+            String name = function.getName();
+            long address = function.getEntryPoint().getOffset() - this.m_program.getImageBase().getOffset();
+
             builder.addSymbols(
                     Gss.Symbol.newBuilder().setName(name).setAddress(address).build()
             );
