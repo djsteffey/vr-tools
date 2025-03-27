@@ -52,9 +52,36 @@ def grpc_get_address_from_symbol(symbol):
     response = stub.GetAddressOfSymbol(request)
 
     # done
-    if response.value == -1:
+    print(response.value)
+    print(hex(response.value))
+    if response.value == 0xffffffffffffffff:
         return -1
     return response.value + gssc_image_base
+
+
+
+# grp to get an address from a symbol
+def grpc_get_all_symbols():
+    global gssc_image_base
+
+    # comms channel
+    channel = grpc.insecure_channel('192.168.230.1:50051')
+
+    # stub
+    stub = gss_pb2_grpc.GhidraSymbolServerStub(channel)
+
+    # create request
+    request = gss_pb2.EmptyRequest()
+
+    # call the method
+    response = stub.GetAllSymbols(request)
+
+    # done
+    for item in response.symbols:
+        item.address += gssc_image_base
+    return response.symbols
+
+
 
 
 
@@ -137,7 +164,54 @@ class GSSCGetAddressFromSymbol(gdb.Command):
 
 
 
+class GSSCGetAllSymbols(gdb.Command):
+    def __init__(self):
+        super(GSSCGetAllSymbols, self).__init__('gssc_getallsymbols', gdb.COMMAND_USER)
+
+    
+    def invoke(self, args, from_tty):
+        # bring in the global
+        global gssc_image_base
+
+        # do it big
+        allsymbols = grpc_get_all_symbols()
+
+        # done
+        for item in allsymbols:
+            if item.address == 0xffffffffffffffff:
+                pass
+            else:
+                print(f'{hex(item.address)} => {item.name}')
+
+
+
+class GSSCApplyAllSymbols(gdb.Command):
+    def __init__(self):
+        super(GSSCApplyAllSymbols, self).__init__('gssc_applyallsymbols', gdb.COMMAND_USER)
+
+    
+    def invoke(self, args, from_tty):
+        # bring in the global
+        global gssc_image_base
+
+        # get all the symbols
+        allsymbols = grpc_get_all_symbols()
+
+        # loop over symbols
+        for item in allsymbols:
+            if item.address == 0xffffffffffffffff:
+                pass
+            else:
+                # make a gdb symbol for it
+                print(f'{hex(item.address)} => {item.name}')
+                gdb.execute(f'set ${item.name.replace('.', '_')} = {hex(item.address)}')
+                
+
+
+
 
 GSSCSetBase()
 GSSCGetSymbolAtAddress()
 GSSCGetAddressFromSymbol()
+GSSCGetAllSymbols()
+GSSCApplyAllSymbols()
