@@ -24,17 +24,23 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tgss.proto\x12\x12ghidrasymbolserver\"\x1d\n\x0cUnsignedLong\x12\r\n\x05value\x18\x01 \x01(\x04\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t2\xbc\x01\n\x12GhidraSymbolServer\x12R\n\x12GetSymbolAtAddress\x12 .ghidrasymbolserver.UnsignedLong\x1a\x1a.ghidrasymbolserver.String\x12R\n\x12GetAddressOfSymbol\x12\x1a.ghidrasymbolserver.String\x1a .ghidrasymbolserver.UnsignedLongb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tgss.proto\x12\x12ghidrasymbolserver\"\x0e\n\x0c\x45mptyRequest\"\x1d\n\x0cUnsignedLong\x12\r\n\x05value\x18\x01 \x01(\x04\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t\"\'\n\x06Symbol\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07\x61\x64\x64ress\x18\x02 \x01(\x04\"A\n\x12\x41llSymbolsResponse\x12+\n\x07symbols\x18\x01 \x03(\x0b\x32\x1a.ghidrasymbolserver.Symbol2\x97\x02\n\x12GhidraSymbolServer\x12R\n\x12GetSymbolAtAddress\x12 .ghidrasymbolserver.UnsignedLong\x1a\x1a.ghidrasymbolserver.String\x12R\n\x12GetAddressOfSymbol\x12\x1a.ghidrasymbolserver.String\x1a .ghidrasymbolserver.UnsignedLong\x12Y\n\rGetAllSymbols\x12 .ghidrasymbolserver.EmptyRequest\x1a&.ghidrasymbolserver.AllSymbolsResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'gss_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_UNSIGNEDLONG']._serialized_start=33
-  _globals['_UNSIGNEDLONG']._serialized_end=62
-  _globals['_STRING']._serialized_start=64
-  _globals['_STRING']._serialized_end=87
-  _globals['_GHIDRASYMBOLSERVER']._serialized_start=90
-  _globals['_GHIDRASYMBOLSERVER']._serialized_end=278
+  _globals['_EMPTYREQUEST']._serialized_start=33
+  _globals['_EMPTYREQUEST']._serialized_end=47
+  _globals['_UNSIGNEDLONG']._serialized_start=49
+  _globals['_UNSIGNEDLONG']._serialized_end=78
+  _globals['_STRING']._serialized_start=80
+  _globals['_STRING']._serialized_end=103
+  _globals['_SYMBOL']._serialized_start=105
+  _globals['_SYMBOL']._serialized_end=144
+  _globals['_ALLSYMBOLSRESPONSE']._serialized_start=146
+  _globals['_ALLSYMBOLSRESPONSE']._serialized_end=211
+  _globals['_GHIDRASYMBOLSERVER']._serialized_start=214
+  _globals['_GHIDRASYMBOLSERVER']._serialized_end=493
 # @@protoc_insertion_point(module_scope)

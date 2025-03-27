@@ -44,6 +44,11 @@ class GhidraSymbolServerStub(object):
                 request_serializer=gss__pb2.String.SerializeToString,
                 response_deserializer=gss__pb2.UnsignedLong.FromString,
                 _registered_method=True)
+        self.GetAllSymbols = channel.unary_unary(
+                '/ghidrasymbolserver.GhidraSymbolServer/GetAllSymbols',
+                request_serializer=gss__pb2.EmptyRequest.SerializeToString,
+                response_deserializer=gss__pb2.AllSymbolsResponse.FromString,
+                _registered_method=True)
 
 
 class GhidraSymbolServerServicer(object):
@@ -61,6 +66,12 @@ class GhidraSymbolServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetAllSymbols(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_GhidraSymbolServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -73,6 +84,11 @@ def add_GhidraSymbolServerServicer_to_server(servicer, server):
                     servicer.GetAddressOfSymbol,
                     request_deserializer=gss__pb2.String.FromString,
                     response_serializer=gss__pb2.UnsignedLong.SerializeToString,
+            ),
+            'GetAllSymbols': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAllSymbols,
+                    request_deserializer=gss__pb2.EmptyRequest.FromString,
+                    response_serializer=gss__pb2.AllSymbolsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -129,6 +145,33 @@ class GhidraSymbolServer(object):
             '/ghidrasymbolserver.GhidraSymbolServer/GetAddressOfSymbol',
             gss__pb2.String.SerializeToString,
             gss__pb2.UnsignedLong.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAllSymbols(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ghidrasymbolserver.GhidraSymbolServer/GetAllSymbols',
+            gss__pb2.EmptyRequest.SerializeToString,
+            gss__pb2.AllSymbolsResponse.FromString,
             options,
             channel_credentials,
             insecure,
