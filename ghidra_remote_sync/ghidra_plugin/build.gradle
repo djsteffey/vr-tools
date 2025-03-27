@@ -1,0 +1,87 @@
+// setup plugins
+plugins {
+	id 'java'
+	id 'com.google.protobuf' version '0.9.4'
+}
+
+
+// define some variables
+def grpcVersion = '1.63.0'
+def protobufVersion = '3.25.3'
+def ghidraInstallDir
+
+
+// find the ghidra installation directory
+if (System.env.GHIDRA_INSTALL_DIR) {
+	ghidraInstallDir = System.env.GHIDRA_INSTALL_DIR
+}
+else if (project.hasProperty("GHIDRA_INSTALL_DIR")) {
+	ghidraInstallDir = project.getProperty("GHIDRA_INSTALL_DIR")
+}
+else {
+	// we can either throw error or manually define it
+	ghidraInstallDir = "C:/Users/dsteffey/Desktop/files/tools/ghidra/ghidra_11.3.1_PUBLIC"
+}
+
+
+// task to build for distribution
+task distributeExtension {
+	group "Ghidra"
+
+	apply from: new File(ghidraInstallDir).getCanonicalPath() + "/support/buildExtension.gradle"
+	dependsOn ':buildExtension'
+}
+
+
+// required task dependencies
+extractIncludeProto.mustRunAfter(copyDependencies)
+extractIncludeTestProto.mustRunAfter(copyDependencies)
+
+
+// repos
+repositories {
+	mavenCentral()
+}
+
+
+// dependencies
+dependencies {
+	implementation "io.grpc:grpc-netty-shaded:$grpcVersion"
+	implementation "io.grpc:grpc-protobuf:$grpcVersion"
+	implementation "io.grpc:grpc-stub:$grpcVersion"
+	implementation "io.grpc:grpc-services:$grpcVersion"
+	implementation "com.google.protobuf:protobuf-java:$protobufVersion"
+	implementation "com.google.protobuf:protobuf-kotlin:$protobufVersion"
+	compileOnly "org.apache.tomcat:annotations-api:6.0.53"
+}
+
+
+// protobuf setup
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:$protobufVersion"
+	}
+	plugins {
+		grpc {
+			artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+		}
+	}
+	generateProtoTasks {
+		all().each { task ->
+			task.plugins {
+				grpc {}
+			}
+		}
+	}
+}
+
+
+// include the protobuf files from one directory up
+// they are one directory up to be easily included in the server project
+sourceSets{
+	main{
+		proto{
+            srcDir("../proto")
+		}
+	}
+}

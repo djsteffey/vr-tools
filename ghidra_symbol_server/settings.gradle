@@ -1,0 +1,2 @@
+rootProject.name = 'ghidra symbol server'
+include 'ghidra_plugin'
