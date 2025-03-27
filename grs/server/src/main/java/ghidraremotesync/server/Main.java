@@ -1,9 +1,5 @@
 package ghidraremotesync.server;
 
-import ghidraremotesync.Grs;
-import ghidraremotesync.RemoteProgramListingGrpc;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
