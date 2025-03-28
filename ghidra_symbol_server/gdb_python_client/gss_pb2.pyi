@@ -5,11 +5,11 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class EmptyRequest(_message.Message):
+class Empty(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
 
-class UnsignedLong(_message.Message):
+class UInt64(_message.Message):
     __slots__ = ("value",)
     VALUE_FIELD_NUMBER: _ClassVar[int]
     value: int
@@ -29,7 +29,7 @@ class Symbol(_message.Message):
     address: int
     def __init__(self, name: _Optional[str] = ..., address: _Optional[int] = ...) -> None: ...
 
-class AllSymbolsResponse(_message.Message):
+class SymbolList(_message.Message):
     __slots__ = ("symbols",)
     SYMBOLS_FIELD_NUMBER: _ClassVar[int]
     symbols: _containers.RepeatedCompositeFieldContainer[Symbol]

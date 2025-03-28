@@ -36,18 +36,23 @@ class GhidraSymbolServerStub(object):
         """
         self.GetSymbolAtAddress = channel.unary_unary(
                 '/ghidrasymbolserver.GhidraSymbolServer/GetSymbolAtAddress',
-                request_serializer=gss__pb2.UnsignedLong.SerializeToString,
+                request_serializer=gss__pb2.UInt64.SerializeToString,
                 response_deserializer=gss__pb2.String.FromString,
                 _registered_method=True)
         self.GetAddressOfSymbol = channel.unary_unary(
                 '/ghidrasymbolserver.GhidraSymbolServer/GetAddressOfSymbol',
                 request_serializer=gss__pb2.String.SerializeToString,
-                response_deserializer=gss__pb2.UnsignedLong.FromString,
+                response_deserializer=gss__pb2.UInt64.FromString,
                 _registered_method=True)
         self.GetAllSymbols = channel.unary_unary(
                 '/ghidrasymbolserver.GhidraSymbolServer/GetAllSymbols',
-                request_serializer=gss__pb2.EmptyRequest.SerializeToString,
-                response_deserializer=gss__pb2.AllSymbolsResponse.FromString,
+                request_serializer=gss__pb2.Empty.SerializeToString,
+                response_deserializer=gss__pb2.SymbolList.FromString,
+                _registered_method=True)
+        self.SetCurrentAddress = channel.unary_unary(
+                '/ghidrasymbolserver.GhidraSymbolServer/SetCurrentAddress',
+                request_serializer=gss__pb2.UInt64.SerializeToString,
+                response_deserializer=gss__pb2.Empty.FromString,
                 _registered_method=True)
 
 
@@ -72,23 +77,34 @@ class GhidraSymbolServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetCurrentAddress(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_GhidraSymbolServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetSymbolAtAddress': grpc.unary_unary_rpc_method_handler(
                     servicer.GetSymbolAtAddress,
-                    request_deserializer=gss__pb2.UnsignedLong.FromString,
+                    request_deserializer=gss__pb2.UInt64.FromString,
                     response_serializer=gss__pb2.String.SerializeToString,
             ),
             'GetAddressOfSymbol': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAddressOfSymbol,
                     request_deserializer=gss__pb2.String.FromString,
-                    response_serializer=gss__pb2.UnsignedLong.SerializeToString,
+                    response_serializer=gss__pb2.UInt64.SerializeToString,
             ),
             'GetAllSymbols': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAllSymbols,
-                    request_deserializer=gss__pb2.EmptyRequest.FromString,
-                    response_serializer=gss__pb2.AllSymbolsResponse.SerializeToString,
+                    request_deserializer=gss__pb2.Empty.FromString,
+                    response_serializer=gss__pb2.SymbolList.SerializeToString,
+            ),
+            'SetCurrentAddress': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetCurrentAddress,
+                    request_deserializer=gss__pb2.UInt64.FromString,
+                    response_serializer=gss__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -116,7 +132,7 @@ class GhidraSymbolServer(object):
             request,
             target,
             '/ghidrasymbolserver.GhidraSymbolServer/GetSymbolAtAddress',
-            gss__pb2.UnsignedLong.SerializeToString,
+            gss__pb2.UInt64.SerializeToString,
             gss__pb2.String.FromString,
             options,
             channel_credentials,
@@ -144,7 +160,7 @@ class GhidraSymbolServer(object):
             target,
             '/ghidrasymbolserver.GhidraSymbolServer/GetAddressOfSymbol',
             gss__pb2.String.SerializeToString,
-            gss__pb2.UnsignedLong.FromString,
+            gss__pb2.UInt64.FromString,
             options,
             channel_credentials,
             insecure,
@@ -170,8 +186,35 @@ class GhidraSymbolServer(object):
             request,
             target,
             '/ghidrasymbolserver.GhidraSymbolServer/GetAllSymbols',
-            gss__pb2.EmptyRequest.SerializeToString,
-            gss__pb2.AllSymbolsResponse.FromString,
+            gss__pb2.Empty.SerializeToString,
+            gss__pb2.SymbolList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetCurrentAddress(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ghidrasymbolserver.GhidraSymbolServer/SetCurrentAddress',
+            gss__pb2.UInt64.SerializeToString,
+            gss__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,
