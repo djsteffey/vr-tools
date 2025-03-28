@@ -46,13 +46,13 @@ class GhidraSymbolServerStub(object):
                 _registered_method=True)
         self.GetAllSymbols = channel.unary_unary(
                 '/ghidrasymbolserver.GhidraSymbolServer/GetAllSymbols',
-                request_serializer=gss__pb2.Empty.SerializeToString,
+                request_serializer=gss__pb2.EmptyMessage.SerializeToString,
                 response_deserializer=gss__pb2.SymbolList.FromString,
                 _registered_method=True)
         self.SetCurrentAddress = channel.unary_unary(
                 '/ghidrasymbolserver.GhidraSymbolServer/SetCurrentAddress',
                 request_serializer=gss__pb2.UInt64.SerializeToString,
-                response_deserializer=gss__pb2.Empty.FromString,
+                response_deserializer=gss__pb2.EmptyMessage.FromString,
                 _registered_method=True)
 
 
@@ -98,13 +98,13 @@ def add_GhidraSymbolServerServicer_to_server(servicer, server):
             ),
             'GetAllSymbols': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAllSymbols,
-                    request_deserializer=gss__pb2.Empty.FromString,
+                    request_deserializer=gss__pb2.EmptyMessage.FromString,
                     response_serializer=gss__pb2.SymbolList.SerializeToString,
             ),
             'SetCurrentAddress': grpc.unary_unary_rpc_method_handler(
                     servicer.SetCurrentAddress,
                     request_deserializer=gss__pb2.UInt64.FromString,
-                    response_serializer=gss__pb2.Empty.SerializeToString,
+                    response_serializer=gss__pb2.EmptyMessage.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -186,7 +186,7 @@ class GhidraSymbolServer(object):
             request,
             target,
             '/ghidrasymbolserver.GhidraSymbolServer/GetAllSymbols',
-            gss__pb2.Empty.SerializeToString,
+            gss__pb2.EmptyMessage.SerializeToString,
             gss__pb2.SymbolList.FromString,
             options,
             channel_credentials,
@@ -214,7 +214,7 @@ class GhidraSymbolServer(object):
             target,
             '/ghidrasymbolserver.GhidraSymbolServer/SetCurrentAddress',
             gss__pb2.UInt64.SerializeToString,
-            gss__pb2.Empty.FromString,
+            gss__pb2.EmptyMessage.FromString,
             options,
             channel_credentials,
             insecure,

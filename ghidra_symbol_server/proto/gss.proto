@@ -5,11 +5,11 @@ package ghidrasymbolserver;
 service GhidraSymbolServer{
     rpc GetSymbolAtAddress(UInt64) returns (String);
     rpc GetAddressOfSymbol(String) returns (UInt64);
-    rpc GetAllSymbols(Empty) returns (SymbolList);
-    rpc SetCurrentAddress(UInt64) returns (Empty);
+    rpc GetAllSymbols(EmptyMessage) returns (SymbolList);
+    rpc SetCurrentAddress(UInt64) returns (EmptyMessage);
 }
 
-message Empty{
+message EmptyMessage{
 
 }
 

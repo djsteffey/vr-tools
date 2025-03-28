@@ -24,23 +24,23 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tgss.proto\x12\x12ghidrasymbolserver\"\x07\n\x05\x45mpty\"\x17\n\x06UInt64\x12\r\n\x05value\x18\x01 \x01(\x04\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t\"\'\n\x06Symbol\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07\x61\x64\x64ress\x18\x02 \x01(\x04\"9\n\nSymbolList\x12+\n\x07symbols\x18\x01 \x03(\x0b\x32\x1a.ghidrasymbolserver.Symbol2\xc8\x02\n\x12GhidraSymbolServer\x12L\n\x12GetSymbolAtAddress\x12\x1a.ghidrasymbolserver.UInt64\x1a\x1a.ghidrasymbolserver.String\x12L\n\x12GetAddressOfSymbol\x12\x1a.ghidrasymbolserver.String\x1a\x1a.ghidrasymbolserver.UInt64\x12J\n\rGetAllSymbols\x12\x19.ghidrasymbolserver.Empty\x1a\x1e.ghidrasymbolserver.SymbolList\x12J\n\x11SetCurrentAddress\x12\x1a.ghidrasymbolserver.UInt64\x1a\x19.ghidrasymbolserver.Emptyb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tgss.proto\x12\x12ghidrasymbolserver\"\x0e\n\x0c\x45mptyMessage\"\x17\n\x06UInt64\x12\r\n\x05value\x18\x01 \x01(\x04\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t\"\'\n\x06Symbol\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07\x61\x64\x64ress\x18\x02 \x01(\x04\"9\n\nSymbolList\x12+\n\x07symbols\x18\x01 \x03(\x0b\x32\x1a.ghidrasymbolserver.Symbol2\xd6\x02\n\x12GhidraSymbolServer\x12L\n\x12GetSymbolAtAddress\x12\x1a.ghidrasymbolserver.UInt64\x1a\x1a.ghidrasymbolserver.String\x12L\n\x12GetAddressOfSymbol\x12\x1a.ghidrasymbolserver.String\x1a\x1a.ghidrasymbolserver.UInt64\x12Q\n\rGetAllSymbols\x12 .ghidrasymbolserver.EmptyMessage\x1a\x1e.ghidrasymbolserver.SymbolList\x12Q\n\x11SetCurrentAddress\x12\x1a.ghidrasymbolserver.UInt64\x1a .ghidrasymbolserver.EmptyMessageb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'gss_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_EMPTY']._serialized_start=33
-  _globals['_EMPTY']._serialized_end=40
-  _globals['_UINT64']._serialized_start=42
-  _globals['_UINT64']._serialized_end=65
-  _globals['_STRING']._serialized_start=67
-  _globals['_STRING']._serialized_end=90
-  _globals['_SYMBOL']._serialized_start=92
-  _globals['_SYMBOL']._serialized_end=131
-  _globals['_SYMBOLLIST']._serialized_start=133
-  _globals['_SYMBOLLIST']._serialized_end=190
-  _globals['_GHIDRASYMBOLSERVER']._serialized_start=193
-  _globals['_GHIDRASYMBOLSERVER']._serialized_end=521
+  _globals['_EMPTYMESSAGE']._serialized_start=33
+  _globals['_EMPTYMESSAGE']._serialized_end=47
+  _globals['_UINT64']._serialized_start=49
+  _globals['_UINT64']._serialized_end=72
+  _globals['_STRING']._serialized_start=74
+  _globals['_STRING']._serialized_end=97
+  _globals['_SYMBOL']._serialized_start=99
+  _globals['_SYMBOL']._serialized_end=138
+  _globals['_SYMBOLLIST']._serialized_start=140
+  _globals['_SYMBOLLIST']._serialized_end=197
+  _globals['_GHIDRASYMBOLSERVER']._serialized_start=200
+  _globals['_GHIDRASYMBOLSERVER']._serialized_end=542
 # @@protoc_insertion_point(module_scope)

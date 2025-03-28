@@ -90,7 +90,7 @@ public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymb
 
 
     @Override
-    public void getAllSymbols(Gss.Empty request, StreamObserver<Gss.SymbolList> responseObserver) {
+    public void getAllSymbols(Gss.EmptyMessage request, StreamObserver<Gss.SymbolList> responseObserver) {
         this.m_logger.addMessage("received request for all symbols");
 
         // start the response
@@ -125,7 +125,7 @@ public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymb
     }
 
     @Override
-    public void setCurrentAddress(Gss.UInt64 request, StreamObserver<Gss.Empty> responseObserver) {
+    public void setCurrentAddress(Gss.UInt64 request, StreamObserver<Gss.EmptyMessage> responseObserver) {
         // address comes in with a base offset of 0; convert to our program base offset
         long addressValue = request.getValue() + this.m_program.getImageBase().getOffset();
 
