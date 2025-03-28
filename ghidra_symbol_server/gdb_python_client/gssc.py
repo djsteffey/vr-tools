@@ -15,6 +15,32 @@ import gss_pb2_grpc
 gssc_image_base = 0
 
 
+# ask gdb for the value of a symbol or reg
+def get_symbol_or_reg_value(sym):
+    val = gdb.parse_and_eval(f'${sym}')
+    return val
+
+
+# grpc to set the address in ghidra
+def grpc_set_current_address(address):
+    global gssc_image_base
+
+    # comms channel
+    channel = grpc.insecure_channel('192.168.230.1:50051')
+
+    # stub
+    stub = gss_pb2_grpc.GhidraSymbolServerStub(channel)
+
+    # create request
+    request = gss_pb2.UInt64(value=(address - gssc_image_base))
+
+    # call the method
+    response = stub.SetCurrentAddress(request)
+
+    # done
+    return
+
+
 # grpc to get the symbol from an address
 def grpc_get_symbol_at_address(address):
     global gssc_image_base
@@ -26,7 +52,7 @@ def grpc_get_symbol_at_address(address):
     stub = gss_pb2_grpc.GhidraSymbolServerStub(channel)
 
     # create request
-    request = gss_pb2.UnsignedLong(value=(address - gssc_image_base))
+    request = gss_pb2.UInt64(value=(address - gssc_image_base))
 
     # call the method
     response = stub.GetSymbolAtAddress(request)
@@ -71,7 +97,7 @@ def grpc_get_all_symbols():
     stub = gss_pb2_grpc.GhidraSymbolServerStub(channel)
 
     # create request
-    request = gss_pb2.EmptyRequest()
+    request = gss_pb2.Empty()
 
     # call the method
     response = stub.GetAllSymbols(request)
@@ -208,6 +234,42 @@ class GSSCApplyAllSymbols(gdb.Command):
                 
 
 
+class GSSCSetCurrentAddress(gdb.Command):
+    def __init__(self):
+        super(GSSCSetCurrentAddress, self).__init__('gssc_setcurrentaddress', gdb.COMMAND_USER)
+
+    
+    def invoke(self, args, from_tty):
+        # bring in the global
+        global gssc_image_base
+
+        # split args into tokens
+        args = args.split(' ')
+
+        # must have one arg
+        if len(args) != 1:
+            print('gssc_setcurrentaddress must have at least one argument')
+            return
+
+        # get the value
+        val = get_symbol_or_reg_value(args[0])
+
+        # rpc it
+
+
+
+
+
+        # do it big
+        allsymbols = grpc_get_all_symbols()
+
+        # done
+        for item in allsymbols:
+            if item.address == 0xffffffffffffffff:
+                pass
+            else:
+                print(f'{hex(item.address)} => {item.name}')
+
 
 
 GSSCSetBase()
@@ -215,3 +277,4 @@ GSSCGetSymbolAtAddress()
 GSSCGetAddressFromSymbol()
 GSSCGetAllSymbols()
 GSSCApplyAllSymbols()
+GSSCSetCurrentAddress()
