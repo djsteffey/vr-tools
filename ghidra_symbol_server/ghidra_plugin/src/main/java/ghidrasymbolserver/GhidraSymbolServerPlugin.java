@@ -8,6 +8,7 @@ import ghidra.app.events.ProgramActivatedPluginEvent;
 import ghidra.app.plugin.PluginCategoryNames;
 import ghidra.app.plugin.ProgramPlugin;
 import ghidra.app.services.ConsoleService;
+import ghidra.app.services.GoToService;
 import ghidra.app.services.ProgramManager;
 import ghidra.framework.plugintool.PluginInfo;
 import ghidra.framework.plugintool.PluginTool;
@@ -100,7 +101,11 @@ public class GhidraSymbolServerPlugin extends ProgramPlugin implements IMessageL
         this.m_startServerAction.setEnabled(false);
 
         // create service
-        this.m_symbolServerService = new GhidraSymbolServerService(this.getCurrentProgram(), this);
+        this.m_symbolServerService = new GhidraSymbolServerService(
+                this.getCurrentProgram(),
+                this,
+                this.getTool().getService(GoToService.class)
+        );
 
         // create server
         this.m_gRpcServer = ServerBuilder.forPort(50051)

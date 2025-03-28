@@ -3,16 +3,17 @@ syntax = "proto3";
 package ghidrasymbolserver;
 
 service GhidraSymbolServer{
-    rpc GetSymbolAtAddress(UnsignedLong) returns (String);
-    rpc GetAddressOfSymbol(String) returns (UnsignedLong);
-    rpc GetAllSymbols(EmptyRequest) returns (AllSymbolsResponse);
+    rpc GetSymbolAtAddress(UInt64) returns (String);
+    rpc GetAddressOfSymbol(String) returns (UInt64);
+    rpc GetAllSymbols(Empty) returns (SymbolList);
+    rpc SetCurrentAddress(UInt64) returns (Empty);
 }
 
-message EmptyRequest{
+message Empty{
 
 }
 
-message UnsignedLong{
+message UInt64{
     uint64 value = 1;
 }
 
@@ -25,6 +26,6 @@ message Symbol{
     uint64 address = 2;
 }
 
-message AllSymbolsResponse{
+message SymbolList{
     repeated Symbol symbols = 1;
 }

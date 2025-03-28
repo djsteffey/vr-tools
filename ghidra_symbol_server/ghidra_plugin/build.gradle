@@ -20,7 +20,8 @@ else if (project.hasProperty("GHIDRA_INSTALL_DIR")) {
 }
 else {
 	// we can either throw error or manually define it
-	ghidraInstallDir = "C:/Users/dsteffey/Desktop/files/tools/ghidra/ghidra_11.3.1_PUBLIC"
+	//ghidraInstallDir = "C:/Users/dsteffey/Desktop/files/tools/ghidra/ghidra_11.3.1_PUBLIC"
+	ghidraInstallDir = "C:/Users/djsteffey/Desktop/ghidra/ghidra_11.3.1_PUBLIC"
 }
 
 

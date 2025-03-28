@@ -1,6 +1,6 @@
 package ghidrasymbolserver;
 
-import ghidra.app.services.ConsoleService;
+import ghidra.app.services.GoToService;
 import ghidra.program.model.address.Address;
 import ghidra.program.model.address.AddressFactory;
 import ghidra.program.model.address.AddressSpace;
@@ -9,26 +9,29 @@ import ghidra.program.model.listing.FunctionIterator;
 import ghidra.program.model.listing.Program;
 import ghidra.program.model.symbol.Symbol;
 import io.grpc.stub.StreamObserver;
-
 import java.util.List;
 
 public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymbolServerImplBase{
     // variables
     private Program m_program;
-    private IMessageLogger m_logger;
+    private final IMessageLogger m_logger;
+    private GoToService m_gotoService;
 
     // methods
-    public GhidraSymbolServerService(Program program, IMessageLogger logger){
+    public GhidraSymbolServerService(Program program, IMessageLogger logger, GoToService gotoService){
         this.m_program = program;
         this.m_logger = logger;
+        this.m_gotoService = gotoService;
     }
+
 
     public void setProgram(Program program){
         this.m_program = program;
     }
 
+
     @Override
-    public void getSymbolAtAddress(Gss.UnsignedLong address, StreamObserver<Gss.String> responseObserver){
+    public void getSymbolAtAddress(Gss.UInt64 address, StreamObserver<Gss.String> responseObserver){
         // address comes in with a base offset of 0; convert to our program base offset
         long addressValue = address.getValue() + this.m_program.getImageBase().getOffset();
 
@@ -59,22 +62,17 @@ public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymb
         this.m_logger.addMessage("responded with symbol: " + responseValue);
     }
 
+
     @Override
-    public void getAddressOfSymbol(Gss.String symbolName, StreamObserver<Gss.UnsignedLong> responseObserver){
+    public void getAddressOfSymbol(Gss.String symbolName, StreamObserver<Gss.UInt64> responseObserver){
         this.m_logger.addMessage("received request for address of symbol " + symbolName.getValue());
 
         // ask ghidra
         List<Symbol> allSymbols = this.m_program.getSymbolTable().getGlobalSymbols(symbolName.getValue());
-        if (allSymbols.isEmpty()){
-
-        }
-        else{
-
-        }
 
         // build response
         long responseValue = allSymbols.isEmpty() ? -1 : allSymbols.getFirst().getAddress().getOffset() - this.m_program.getImageBase().getOffset();
-        Gss.UnsignedLong response = Gss.UnsignedLong.newBuilder().setValue(responseValue).build();
+        Gss.UInt64 response = Gss.UInt64.newBuilder().setValue(responseValue).build();
 
         // send response
         responseObserver.onNext(response);
@@ -90,41 +88,13 @@ public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymb
         );
     }
 
-    /*
+
     @Override
-    public void getAllSymbols(Gss.EmptyRequest request, StreamObserver<Gss.AllSymbolsResponse> responseObserver) {
+    public void getAllSymbols(Gss.Empty request, StreamObserver<Gss.SymbolList> responseObserver) {
         this.m_logger.addMessage("received request for all symbols");
 
         // start the response
-        Gss.AllSymbolsResponse.Builder builder = Gss.AllSymbolsResponse.newBuilder();
-
-        // ask ghidra
-        int count = 0;
-        for (Symbol symbol : this.m_program.getSymbolTable().getAllSymbols(false)){
-            count += 1;
-            String name = symbol.getName();
-            long address = symbol.getAddress().getOffset() - this.m_program.getImageBase().getOffset();
-            builder.addSymbols(
-                    Gss.Symbol.newBuilder().setName(name).setAddress(address).build()
-            );
-        }
-
-        // send it
-        responseObserver.onNext(builder.build());
-
-        // done
-        responseObserver.onCompleted();
-
-        // log
-        this.m_logger.addMessage("all symbols sent (" + count + ")");
-    }*/
-
-    @Override
-    public void getAllSymbols(Gss.EmptyRequest request, StreamObserver<Gss.AllSymbolsResponse> responseObserver) {
-        this.m_logger.addMessage("received request for all symbols");
-
-        // start the response
-        Gss.AllSymbolsResponse.Builder builder = Gss.AllSymbolsResponse.newBuilder();
+        Gss.SymbolList.Builder builder = Gss.SymbolList.newBuilder();
 
         // ask ghidra
         int count = 0;
@@ -152,5 +122,25 @@ public class GhidraSymbolServerService extends GhidraSymbolServerGrpc.GhidraSymb
 
         // log
         this.m_logger.addMessage("all symbols sent (" + count + ")");
+    }
+
+    @Override
+    public void setCurrentAddress(Gss.UInt64 request, StreamObserver<Gss.Empty> responseObserver) {
+        // address comes in with a base offset of 0; convert to our program base offset
+        long addressValue = request.getValue() + this.m_program.getImageBase().getOffset();
+
+        // log
+        this.m_logger.addMessage("received request to set current address");
+
+        // build the address
+        Address address = this.m_program.getAddressFactory()
+                .getDefaultAddressSpace()
+                .getAddress(addressValue);
+
+        // go to the address
+        this.m_gotoService.goTo(address);
+
+        // done
+        responseObserver.onCompleted();
     }
 }
