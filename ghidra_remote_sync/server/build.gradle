@@ -34,9 +34,7 @@ dependencies {
     implementation "com.google.protobuf:protobuf-kotlin:$protobufVersion"
     compileOnly "org.apache.tomcat:annotations-api:6.0.53"
 
-    implementation files(ghidraInstallDir + '/Ghidra/Framework/Utility/lib/Utility.jar')
-    implementation files(ghidraInstallDir + '/Ghidra/Features/Base/lib/Base.jar')
-    implementation files(ghidraInstallDir + '/Ghidra/Framework/Project/lib/Project.jar')
+    implementation files(ghidraInstallDir + '/support/ghidra.jar')
 }
 
 protobuf {

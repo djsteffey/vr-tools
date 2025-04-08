@@ -1,4 +1,4 @@
-package ghidraremotesync.client;
+package ghidraremotesync.client._bak;
 
 import ghidra.framework.data.DBContentHandler;
 import ghidra.framework.data.DomainObjectMergeManager;

@@ -1,0 +1,33 @@
+// setup plugins
+plugins {
+	id 'java'
+}
+
+
+// define some variables
+def ghidraInstallDir
+
+
+// find the ghidra installation directory
+if (System.getenv("GHIDRA_INSTALL_DIR") != null) {
+	ghidraInstallDir = System.getenv("GHIDRA_INSTALL_DIR")
+}
+else{
+	throw new GradleException("Ghidra install directory not found.  Ensure GHIDRA_INSTALL_DIR environment variable is defined.")
+}
+
+
+
+// this will add all the ghidra build tasks
+apply from: new File(ghidraInstallDir).getCanonicalPath() + "/support/buildExtension.gradle"
+
+// repos
+repositories {
+	mavenCentral()
+}
+
+
+// dependencies
+dependencies {
+	implementation 'redis.clients:jedis:5.1.0'
+}

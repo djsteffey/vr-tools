@@ -1,24 +1,38 @@
 package ghidraremotesync.client;
 
+import db.DBHandle;
 import docking.ActionContext;
 import docking.action.DockingAction;
 import docking.action.ToolBarData;
 import ghidra.app.CorePluginPackage;
+import ghidra.app.events.OpenProgramPluginEvent;
+import ghidra.app.events.ProgramActivatedPluginEvent;
+import ghidra.app.events.ProgramOpenedPluginEvent;
 import ghidra.app.plugin.PluginCategoryNames;
+import ghidra.app.plugin.core.codebrowser.CodeBrowserPlugin;
+import ghidra.app.plugin.core.progmgr.ProgramLocator;
+import ghidra.app.plugin.core.progmgr.ProgramManagerPlugin;
+import ghidra.app.services.GoToService;
+import ghidra.app.services.ProgramManager;
+import ghidra.app.util.task.OpenProgramTask;
+import ghidra.framework.main.AppInfo;
+import ghidra.framework.model.DomainFile;
 import ghidra.framework.plugintool.Plugin;
 import ghidra.framework.plugintool.PluginInfo;
 import ghidra.framework.plugintool.PluginTool;
+import ghidra.framework.plugintool.util.PluginException;
 import ghidra.framework.plugintool.util.PluginStatus;
+import ghidra.program.database.ProgramDB;
+import ghidra.program.model.listing.Program;
 import ghidra.util.Msg;
-import ghidraremotesync.Grs;
-import ghidraremotesync.RemoteProgramListingGrpc;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-
+import ghidraremotesync.client.remote.RemoteProgram;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 
 @PluginInfo(
@@ -26,7 +40,13 @@ import java.util.concurrent.Executors;
         packageName = CorePluginPackage.NAME,
         category = PluginCategoryNames.COMMON,
         shortDescription = "Manage Remote Synced Programs",
-        description = "Manages remote server and programs for synchronization between multiple users simultaneously"
+        description = "Manages remote server and programs for synchronization between multiple users simultaneously",
+        servicesRequired = {
+
+        },
+        eventsProduced ={
+                ProgramActivatedPluginEvent.class
+        }
 )
 public class GhidraRemoteSyncPlugin extends Plugin {
     private JPanel panel;
@@ -38,7 +58,6 @@ public class GhidraRemoteSyncPlugin extends Plugin {
         createTreeView(tool);
         this.getRemoteProgramInfoAsync();
     }
-
 
     private void createButton(PluginTool tool) {
         DockingAction action = new DockingAction("ToolChest Icon", getName()) {
@@ -69,6 +88,67 @@ public class GhidraRemoteSyncPlugin extends Plugin {
         tool.getToolFrame().add(panel, BorderLayout.WEST);
         tool.getToolFrame().validate();
         tool.getToolFrame().repaint();
+
+
+        tree.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // Detect double-click
+                    DomainFile df = tool.getProject()
+                            .getProjectData()
+                            .getRootFolder()
+                            .getFile("notepad++.exe");
+
+                    /*
+                    tool.getProject()
+                            .getToolServices()
+                            .launchTool("CodeBrowser", Arrays.asList(df));
+                     */
+
+                    RemoteProgram_v2 program = new RemoteProgram_v2(tool);
+
+                    PluginTool cb = tool.getProject()
+                            .getToolServices()
+                            .launchTool("CodeBrowser", null);
+                    cb.getService(ProgramManager.class).openProgram(program);
+
+                    /*
+                    cb.firePluginEvent(new ProgramActivatedPluginEvent(
+                            "GhidraRemoteSyncPlugin", program.m_real
+                    ));
+                    cb.firePluginEvent(new ProgramOpenedPluginEvent(
+                            "GhidraRemoteSyncPlugin", program.m_real
+                    ));*/
+
+                    int y = 0;
+                    /*
+                    PluginTool tool = GhidraRemoteSyncPlugin.this.getTool();
+
+                    RemoteProgram_v2 program = new RemoteProgram_v2(tool);
+
+                    ProgramManager programManager = tool.getService(ProgramManager.class);
+
+                    if (programManager != null) {
+                        programManager.openProgram(
+                                tool.getProject()
+                                        .getProjectData()
+                                        .getRootFolder()
+                                        .getFile("notepad++.exe")
+                        );
+                        programManager.openProgram(program.m_real); // Open the ProgramDB in the Code Browser
+                    } else {
+                        Msg.showError(this, null, "Error", "ProgramManager service not available!");
+                    }*/
+
+                    /*
+                    tool.firePluginEvent(
+                            new ProgramOpenedPluginEvent(
+                                    GhidraRemoteSyncPlugin.this.getName(),
+                                    program.m_real
+                            )
+                    );*/
+                }
+            }
+        });
     }
 
 
@@ -77,7 +157,7 @@ public class GhidraRemoteSyncPlugin extends Plugin {
 
 
 
-
+    /*
     public static class GrpcClient {
         public static void doit(JTree tree) {
             // connect
@@ -117,20 +197,12 @@ public class GhidraRemoteSyncPlugin extends Plugin {
             else{
                 node.add(new DefaultMutableTreeNode(file.getName()));
             }
-
-            /*
-            String prefix = "  ".repeat(indent);
-            System.out.println(prefix + (file.getIsDirectory() ? "[D] " : "[F] ") + file.getName());
-
-            for (Grs.RemoteProgramInfo subFile : file.getSubFilesList()) {
-                printFileInfo(subFile, indent + 1); // Recursively print subfiles with indentation
-            }*/
         }
-    }
+    }*/
 
     private void getRemoteProgramInfoAsync(){
         Executors.newSingleThreadExecutor().execute(() -> {
-            GrpcClient.doit(this.tree);
+            //GrpcClient.doit(this.tree);
         });
     }
 }

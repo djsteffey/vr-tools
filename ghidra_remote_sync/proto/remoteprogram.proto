@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package ghidraremotesync.remoteprogram;
+
+service RemoteProgram{
+    rpc GetRemoteProgramInfoList(Empty) returns(Empty);
+}
+
+message Empty{
+
+}
+
+message String{
+    string value = 1;
+}
